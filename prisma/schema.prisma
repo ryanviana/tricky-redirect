@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Redirect {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  firstUrl  String   @map("first_url")
+  nextUrl   String   @map("next_url")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  visits RedirectVisit[]
+
+  @@map("redirects")
+}
+
+model RedirectVisit {
+  id        String   @id @default(cuid())
+  slugId    String   @map("slug_id")
+  visitorIp String   @map("visitor_ip")
+  visitedAt DateTime @default(now()) @map("visited_at")
+
+  redirect Redirect @relation(fields: [slugId], references: [id], onDelete: Cascade)
+
+  @@unique([slugId, visitorIp])
+  @@map("redirect_visits")
+} 
