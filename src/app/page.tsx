@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -59,12 +60,12 @@ export default function Home() {
         <div className="text-center">
           <div className="flex justify-between items-center mb-4">
             <div></div>
-            <a
+            <Link
               href="/urls"
               className="text-blue-600 hover:text-blue-800 text-sm font-medium"
             >
               Manage URLs →
-            </a>
+            </Link>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Smart Redirect System

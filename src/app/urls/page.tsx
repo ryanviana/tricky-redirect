@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 interface Redirect {
   id: string;
@@ -98,12 +99,12 @@ export default function URLsPage() {
               </h1>
               <p className="text-gray-600 mt-2">Manage your smart redirects</p>
             </div>
-            <a
+            <Link
               href="/"
               className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Create New Redirect
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -143,12 +144,12 @@ export default function URLsPage() {
               <p className="text-gray-600 mb-4">
                 Get started by creating your first smart redirect.
               </p>
-              <a
+              <Link
                 href="/"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
               >
                 Create Redirect
-              </a>
+              </Link>
             </div>
           ) : (
             <div className="overflow-x-auto">
