@@ -169,7 +169,7 @@ export default function URLsPage() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Created
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
                       Actions
                     </th>
                   </tr>
@@ -205,7 +205,7 @@ export default function URLsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div
-                          className="text-sm text-gray-900 max-w-xs truncate"
+                          className="text-sm text-gray-900 max-w-[150px] sm:max-w-xs truncate"
                           title={redirect.firstUrl}
                         >
                           {redirect.firstUrl}
@@ -213,7 +213,7 @@ export default function URLsPage() {
                       </td>
                       <td className="px-6 py-4">
                         <div
-                          className="text-sm text-gray-900 max-w-xs truncate"
+                          className="text-sm text-gray-900 max-w-[150px] sm:max-w-xs truncate"
                           title={redirect.nextUrl}
                         >
                           {redirect.nextUrl}
@@ -235,7 +235,7 @@ export default function URLsPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {new Date(redirect.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium w-32">
                         <div className="flex space-x-2">
                           <a
                             href={`/${redirect.slug}`}
@@ -250,7 +250,8 @@ export default function URLsPage() {
                               deleteRedirect(redirect.id, redirect.slug)
                             }
                             disabled={deleteLoading === redirect.id}
-                            className="text-red-600 hover:text-red-900 disabled:opacity-50"
+                            className="px-2 py-1 text-xs bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-900 disabled:opacity-50 rounded border border-red-300"
+                            title="Delete this redirect"
                           >
                             {deleteLoading === redirect.id
                               ? "Deleting..."
