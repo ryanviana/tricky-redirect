@@ -20,7 +20,7 @@ export async function DELETE(
       );
     }
 
-    // Delete the redirect (this will cascade delete visits due to the schema)
+    // Delete the redirect
     await prisma.redirect.delete({
       where: { id },
     });

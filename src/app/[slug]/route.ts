@@ -8,34 +8,40 @@ export async function GET(
   try {
     const { slug } = await params;
 
-    // Find the redirect by slug
-    const redirect = await prisma.redirect.findUnique({
-      where: { slug },
+    // Use a transaction to atomically check and update the firstUsed flag
+    const result = await prisma.$transaction(async (tx) => {
+      // Find the redirect by slug
+      const redirect = await tx.redirect.findUnique({
+        where: { slug },
+      });
+
+      if (!redirect) {
+        return { error: "Redirect not found" };
+      }
+
+      let redirectUrl: string;
+
+      if (redirect.firstUsed) {
+        // First redirect has already been used - redirect to nextUrl
+        redirectUrl = redirect.nextUrl;
+      } else {
+        // This is the first visit ever - mark as used and redirect to firstUrl
+        await tx.redirect.update({
+          where: { id: redirect.id },
+          data: { firstUsed: true },
+        });
+        redirectUrl = redirect.firstUrl;
+      }
+
+      return { redirectUrl };
     });
 
-    if (!redirect) {
-      return NextResponse.json(
-        { error: "Redirect not found" },
-        { status: 404 }
-      );
-    }
-
-    let redirectUrl: string;
-
-    if (redirect.firstUsed) {
-      // First redirect has already been used - redirect to nextUrl
-      redirectUrl = redirect.nextUrl;
-    } else {
-      // This is the first visit ever - mark as used and redirect to firstUrl
-      await prisma.redirect.update({
-        where: { id: redirect.id },
-        data: { firstUsed: true },
-      });
-      redirectUrl = redirect.firstUrl;
+    if ("error" in result) {
+      return NextResponse.json({ error: result.error }, { status: 404 });
     }
 
     // Perform the redirect
-    return NextResponse.redirect(redirectUrl, { status: 302 });
+    return NextResponse.redirect(result.redirectUrl, { status: 302 });
   } catch (error) {
     console.error("Error handling redirect:", error);
     return NextResponse.json(
