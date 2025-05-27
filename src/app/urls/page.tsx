@@ -233,7 +233,14 @@ export default function URLsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {new Date(redirect.createdAt).toLocaleDateString()}
+                        {new Date(redirect.createdAt).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium w-32">
                         <div className="flex space-x-2">
