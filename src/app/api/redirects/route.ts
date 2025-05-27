@@ -4,13 +4,6 @@ import { prisma } from "@/lib/prisma";
 export async function GET() {
   try {
     const redirects = await prisma.redirect.findMany({
-      include: {
-        _count: {
-          select: {
-            visits: true,
-          },
-        },
-      },
       orderBy: {
         createdAt: "desc",
       },

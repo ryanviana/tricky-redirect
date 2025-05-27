@@ -1,35 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-function getClientIP(request: NextRequest): string {
-  // Try to get IP from various headers (for different hosting providers)
-  const forwarded = request.headers.get("x-forwarded-for");
-  const realIP = request.headers.get("x-real-ip");
-  const cfConnectingIP = request.headers.get("cf-connecting-ip");
-
-  if (forwarded) {
-    return forwarded.split(",")[0].trim();
-  }
-
-  if (realIP) {
-    return realIP;
-  }
-
-  if (cfConnectingIP) {
-    return cfConnectingIP;
-  }
-
-  // Fallback to a default IP for development
-  return "127.0.0.1";
-}
-
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     const { slug } = await params;
-    const clientIP = getClientIP(request);
 
     // Find the redirect by slug
     const redirect = await prisma.redirect.findUnique({
@@ -43,28 +20,16 @@ export async function GET(
       );
     }
 
-    // Check if this IP has visited this slug before
-    const existingVisit = await prisma.redirectVisit.findUnique({
-      where: {
-        slugId_visitorIp: {
-          slugId: redirect.id,
-          visitorIp: clientIP,
-        },
-      },
-    });
-
     let redirectUrl: string;
 
-    if (existingVisit) {
-      // Subsequent visit - redirect to nextUrl
+    if (redirect.firstUsed) {
+      // First redirect has already been used - redirect to nextUrl
       redirectUrl = redirect.nextUrl;
     } else {
-      // First visit - record the visit and redirect to firstUrl
-      await prisma.redirectVisit.create({
-        data: {
-          slugId: redirect.id,
-          visitorIp: clientIP,
-        },
+      // This is the first visit ever - mark as used and redirect to firstUrl
+      await prisma.redirect.update({
+        where: { id: redirect.id },
+        data: { firstUsed: true },
       });
       redirectUrl = redirect.firstUrl;
     }

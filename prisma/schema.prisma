@@ -15,21 +15,8 @@ model Redirect {
   slug      String   @unique
   firstUrl  String   @map("first_url")
   nextUrl   String   @map("next_url")
+  firstUsed Boolean  @default(false) @map("first_used")
   createdAt DateTime @default(now()) @map("created_at")
 
-  visits RedirectVisit[]
-
   @@map("redirects")
-}
-
-model RedirectVisit {
-  id        String   @id @default(cuid())
-  slugId    String   @map("slug_id")
-  visitorIp String   @map("visitor_ip")
-  visitedAt DateTime @default(now()) @map("visited_at")
-
-  redirect Redirect @relation(fields: [slugId], references: [id], onDelete: Cascade)
-
-  @@unique([slugId, visitorIp])
-  @@map("redirect_visits")
 } 
