@@ -8,10 +8,8 @@ interface Redirect {
   slug: string;
   firstUrl: string;
   nextUrl: string;
+  firstUsed: boolean;
   createdAt: string;
-  _count: {
-    visits: number;
-  };
 }
 
 export default function URLsPage() {
@@ -166,7 +164,7 @@ export default function URLsPage() {
                       Next URL
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Visits
+                      Status
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Created
@@ -222,8 +220,16 @@ export default function URLsPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                          {redirect._count.visits} visits
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            redirect.firstUsed
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-green-100 text-green-800"
+                          }`}
+                        >
+                          {redirect.firstUsed
+                            ? "First click used"
+                            : "Ready for first click"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
